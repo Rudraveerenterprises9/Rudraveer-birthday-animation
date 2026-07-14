@@ -9,9 +9,24 @@
     <meta property="og:title" content="Rudraveer's Royal 3D Birthday Invitation 🎁" />
     <meta property="og:description"
         content="Join us to celebrate Rudraveer's Birthday! 📅 23rd July 2026 at Hotel Royal Chetna. Tap to open your 3D interactive invitation." />
-    <!-- NOTE: For WhatsApp to load the image perfectly, provide the full absolute URL if hosted, e.g. "https://yourwebsite.com/photo7.jpg" -->
-    <meta property="og:image" content="photo7.jpg" />
+
+    <!-- ✅ WhatsApp preview image — must be absolute URL, min 300x200px -->
+    <meta property="og:image" content="https://rudraveer-birthday-animation.pages.dev/photo7.jpg" />
+    <meta property="og:image:secure_url" content="https://rudraveer-birthday-animation.pages.dev/photo7.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Rudraveer's Birthday Invitation - 23rd July 2026" />
+    <meta property="og:url" content="https://rudraveer-birthday-animation.pages.dev/" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Rudraveer Birthday Invitation" />
+
+    <!-- Twitter / X card (also used by some WhatsApp crawlers) -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Rudraveer's Royal 3D Birthday Invitation 🎁" />
+    <meta name="twitter:description" content="Join us to celebrate Rudraveer's Birthday! 📅 23rd July 2026 at Hotel Royal Chetna." />
+    <meta name="twitter:image" content="https://rudraveer-birthday-animation.pages.dev/photo7.jpg" />
+
     <meta name="description"
         content="Join us to celebrate Rudraveer's Birthday! 📅 23rd July 2026. Tap to open your 3D interactive invitation." />
 
@@ -76,7 +91,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            padding-bottom: 40px;
+            padding-bottom: 15px;
             box-shadow: 0 15px 50px rgba(10, 61, 145, 0.3);
         }
 
@@ -92,7 +107,7 @@
         }
 
         #start-btn {
-            background: linear-gradient(135deg, #1e3a8a, #0a3d91);
+            background: transparent;
             color: #fff;
             border: 2px solid #d4af37;
             /* Gold border to contrast with blue */
@@ -102,7 +117,6 @@
             font-family: 'Playfair Display', serif;
             font-weight: 800;
             border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
             cursor: pointer;
             animation: pulseBtn 2s infinite;
             outline: none;
@@ -112,17 +126,14 @@
         @keyframes pulseBtn {
             0% {
                 transform: scale(1);
-                box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
             }
 
             50% {
                 transform: scale(1.05);
-                box-shadow: 0 15px 40px rgba(212, 175, 55, 0.8);
             }
 
             100% {
                 transform: scale(1);
-                box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
             }
         }
 
@@ -203,7 +214,7 @@
 
         .venue-info .highlight {
             color: #ff0000;
-            /* Solid Gold */
+            /* Solid Red — accent color for date/time highlight */
             font-size: 1.05rem;
             font-weight: 800;
         }
@@ -270,6 +281,76 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
+        /* ── Loading Indicator ── */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(232, 244, 248, 0.97);
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        #loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-ring {
+            width: 62px;
+            height: 62px;
+            border: 5px solid rgba(10, 61, 145, 0.12);
+            border-top: 5px solid #d4af37;
+            border-right: 5px solid #0a3d91;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-text {
+            margin-top: 18px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #0a3d91;
+            letter-spacing: 0.5px;
+        }
+
+        .loader-dots::after {
+            content: '';
+            animation: dots 1.5s steps(3, end) infinite;
+        }
+
+        @keyframes dots {
+            0% {
+                content: '';
+            }
+
+            33% {
+                content: '.';
+            }
+
+            66% {
+                content: '..';
+            }
+
+            100% {
+                content: '...';
+            }
+        }
+
         @media (max-width: 400px) {
             h1 {
                 font-size: 2.2rem;
@@ -305,18 +386,24 @@
 
 <body>
 
-    <!-- Audio Element -->
-    <audio id="bg-music" src="bg-music.mp3" loop></audio>
+    <!-- Audio Element: plays exactly 2 times, then stops -->
+    <audio id="bg-music" src="bg-music.mp3"></audio>
 
     <!-- Start Overlay -->
     <div id="start-overlay">
         <div id="start-photo">
-            <button id="start-btn">Tap to Open Rudraveer's Invitation 🎁</button>
+            <button id="start-btn">Tap to Open Invitation 🎁</button>
         </div>
     </div>
 
     <!-- 3D WebGL Canvas -->
     <canvas id="webgl-canvas"></canvas>
+
+    <!-- Loading Indicator: visible while textures are loading -->
+    <div id="loading-overlay">
+        <div class="loader-ring"></div>
+        <p class="loader-text">Preparing Your Invitation<span class="loader-dots"></span></p>
+    </div>
 
     <div class="swipe-instruction" id="swipe-hint">👆 Swipe to Spin</div>
 
@@ -331,7 +418,14 @@
             <div class="venue-info">
                 <p>📅 <span class="highlight">23rd July 2026 | 5:00 PM</span></p>
                 <p>📍 Hotel Royal Chetna, Gami Tola, Katihar</p>
-                <p>📞 RSVP: <a href="tel:+919110145291" class="contact-link">+91-9110145291</a></p>
+                <p>📞 RSVP: <a data-phone="rsvp" href="tel:+919110145291" class="contact-link">+91-9110145291</a></p>
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(0, 0, 0, 0.4);">
+                    <p style="font-size: 0.8rem; font-weight: 600; color: #000000; margin-bottom: 2px;">Warm Regards:
+                    </p>
+                    <p
+                        style="font-size: 0.95rem; font-weight: 800; color: #ff0000; font-family: 'Playfair Display', serif;">
+                        Roshan Paswan & Rohini Sinha Choudhary</p>
+                </div>
             </div>
             <div class="countdown-container">
                 <div class="time-box"><span class="num" id="cd-days">00</span><span class="label">Days</span></div>
@@ -343,9 +437,12 @@
     </div>
 
     <!-- Shop Details Floating at Absolute Bottom -->
-    <div style="position: fixed; bottom: 5px; left: 0; width: 100%; text-align: center; z-index: 20; pointer-events: none;">
-        <p style="font-family: 'Poppins', sans-serif; font-size: 0.7rem; color: #ffffff; text-shadow: 0px 1px 4px rgba(0,0,0,0.8); margin: 0; font-weight: 600; letter-spacing: 0.5px;">
-            Designed by Rudraveer Enterprises | 📞 <a href="tel:7765884542" style="color: #ffd700; text-decoration: none; pointer-events: auto;">7765884542</a>
+    <div
+        style="position: fixed; bottom: 5px; left: 0; width: 100%; text-align: center; z-index: 20; pointer-events: none;">
+        <p
+            style="font-family: 'Poppins', sans-serif; font-size: 0.7rem; color: #ffffff; text-shadow: 0px 1px 4px rgba(0,0,0,0.8); margin: 0; font-weight: 600; letter-spacing: 0.5px;">
+            Designed by Rudraveer Enterprises | 📞 <a data-phone="designer" href="tel:7765884542"
+                style="color: #ffd700; text-decoration: none; pointer-events: auto;">7765884542</a>
         </p>
     </div>
 
@@ -355,6 +452,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <script>
+        // --- CENTRALISED CONTACT CONSTANTS ---
+        // Update these two values in one place when numbers change.
+        const PHONE_RSVP = '+919110145291';
+        const PHONE_DESIGNER = '7765884542';
+
+        // Inject phone numbers into HTML so they stay in sync with the constants above
+        document.querySelectorAll('[data-phone="rsvp"]').forEach(el => {
+            el.href = 'tel:' + PHONE_RSVP;
+            el.textContent = '+91-' + PHONE_RSVP.slice(3);
+        });
+        document.querySelectorAll('[data-phone="designer"]').forEach(el => {
+            el.href = 'tel:' + PHONE_DESIGNER;
+            el.textContent = PHONE_DESIGNER;
+        });
+
         // --- 1. COUNTDOWN TIMER ---
         const initCountdown = () => {
             const targetDate = new Date("Jul 23, 2026 17:00:00").getTime();
@@ -363,13 +475,15 @@
             const elMins = document.getElementById('cd-mins');
             const elSecs = document.getElementById('cd-secs');
 
-            setInterval(() => {
+            // Store the interval ID so we can clear it once the countdown ends
+            const intervalId = setInterval(() => {
                 const now = new Date().getTime();
                 const distance = targetDate - now;
 
                 if (distance < 0) {
                     elDays.innerText = "00"; elHours.innerText = "00";
                     elMins.innerText = "00"; elSecs.innerText = "00";
+                    clearInterval(intervalId); // ✅ Prevent memory leak after event passes
                     return;
                 }
 
@@ -421,11 +535,37 @@
             scene.add(centerLight);
 
             const animatedObjects = [];
-            const allFrameBulbs = []; // Added for 7-color animation
-            const colors = [0x1e3a8a, 0xffd700, 0x87ceeb, 0xffb6c1, 0xffffff];
+            const allFrameBulbs = [];   // per-frame bulb arrays
+            const allBulbLights = [];   // point-lights that make bulbs glow like Diwali
+
+            // 🎈 Balloon colours — now includes red + full rainbow palette
+            const colors = [
+                0xff0000, // Red
+                0xff4500, // OrangeRed
+                0xff7f00, // Orange
+                0xffff00, // Yellow
+                0x00cc44, // Green
+                0x00cfff, // Sky Blue
+                0x1e3a8a, // Royal Blue
+                0x9b59b6, // Purple
+                0xff69b4, // Hot Pink
+                0xffd700, // Gold
+                0xffffff, // White
+                0x87ceeb  // Light Blue
+            ];
 
             const textureLoader = new THREE.TextureLoader();
             const images = ['photo1.jpg', 'photo2.jpg', 'photo3.jpg', 'photo4.jpg', 'photo5.jpg', 'photo6.jpg'];
+            const loadingOverlay = document.getElementById('loading-overlay');
+            let loadedCount = 0;
+            const hideLoaderWhenDone = () => {
+                loadedCount++;
+                if (loadedCount >= images.length) {
+                    // All textures ready — fade out and remove the loader
+                    loadingOverlay.classList.add('hidden');
+                    setTimeout(() => { loadingOverlay.style.display = 'none'; }, 850);
+                }
+            };
 
             // 🔴 CHANGED: Radius reduced to close the gap between photos 🔴
             const galleryRadius = window.innerWidth < 600 ? 11 : 14;
@@ -433,15 +573,24 @@
             const targetHeight = targetWidth * (4 / 3);
             const planeAspect = targetWidth / targetHeight;
 
-            // 🔴 CHANGED: Rich Gold Photo Frames 🔴
+            // 🟡 Original Rich Gold frame — back to the clean gold look
             const metalMat = new THREE.MeshStandardMaterial({
                 color: 0xffaa00, // Rich Gold
                 metalness: 0.8,
                 roughness: 0.15
             });
 
+            // Add a strong directional rim light so frames shimmer as they rotate
+            const rimLight = new THREE.DirectionalLight(0xffeedd, 1.5);
+            rimLight.position.set(-15, 10, -10);
+            scene.add(rimLight);
+            const rimLight2 = new THREE.DirectionalLight(0xaad4ff, 1.2);
+            rimLight2.position.set(15, 5, 10);
+            scene.add(rimLight2);
+
             images.forEach((imgSrc, index) => {
                 textureLoader.load(imgSrc, (texture) => {
+                    hideLoaderWhenDone();
                     texture.encoding = THREE.sRGBEncoding;
                     texture.minFilter = THREE.LinearFilter;
                     texture.magFilter = THREE.LinearFilter;
@@ -496,9 +645,10 @@
                     rightMesh.position.set(targetWidth / 2 + borderThickness / 2, 0, 0);
                     frameGroup.add(rightMesh);
 
-                    // 4. Glowing Bulb Lights along the frame border
-                    const bulbGeo = new THREE.SphereGeometry(0.1, 16, 16); // Increased ball size for better visibility
-                    const bulbZ = frameDepth / 2;
+                    // 4. Diwali-style Glowing Bulbs along frame border
+                    // Bigger spheres (0.22) so they look like real light balls
+                    const bulbGeo = new THREE.SphereGeometry(0.22, 16, 16);
+                    const bulbZ = frameDepth / 2 + 0.1;
 
                     const bX = targetWidth / 2 + borderThickness / 2;
                     const bY = targetHeight / 2 + borderThickness / 2;
@@ -507,21 +657,37 @@
                     const bCountX = 5;
                     const bCountY = 6;
 
-                    // Order sequentially for "chaser" effect: Top, Right, Bottom, Left
+                    // Sequential order: Top → Right → Bottom → Left (chaser order)
                     for (let i = 0; i <= bCountX; i++) bulbsPositions.push({ x: THREE.MathUtils.lerp(-bX, bX, i / bCountX), y: bY });
                     for (let i = 1; i <= bCountY; i++) bulbsPositions.push({ x: bX, y: THREE.MathUtils.lerp(bY, -bY, i / bCountY) });
                     for (let i = 1; i <= bCountX; i++) bulbsPositions.push({ x: THREE.MathUtils.lerp(bX, -bX, i / bCountX), y: -bY });
                     for (let i = 1; i < bCountY; i++) bulbsPositions.push({ x: -bX, y: THREE.MathUtils.lerp(-bY, bY, i / bCountY) });
 
                     const frameBulbs = [];
-                    bulbsPositions.forEach(pos => {
-                        const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                    const frameBulbLights = [];
+                    bulbsPositions.forEach((pos, bi) => {
+                        // Emissive material so bulb itself glows brightly
+                        const bulbMat = new THREE.MeshStandardMaterial({
+                            color: 0xffffff,
+                            emissive: 0xffffff,
+                            emissiveIntensity: 3.0
+                        });
                         const bulb = new THREE.Mesh(bulbGeo, bulbMat);
                         bulb.position.set(pos.x, pos.y, bulbZ);
                         frameGroup.add(bulb);
                         frameBulbs.push(bulb);
+
+                        // Each bulb gets its own small PointLight for real Diwali glow
+                        // Only add lights for every 3rd bulb to stay performant
+                        if (bi % 3 === 0) {
+                            const bLight = new THREE.PointLight(0xffffff, 0, 4);
+                            bLight.position.set(pos.x, pos.y, bulbZ + 0.3);
+                            frameGroup.add(bLight);
+                            frameBulbLights.push({ light: bLight, bulbIndex: bi });
+                        }
                     });
                     allFrameBulbs.push(frameBulbs);
+                    allBulbLights.push(frameBulbLights);
 
                     // Position the whole framed group in the circular gallery
                     const angle = (index / images.length) * Math.PI * 2;
@@ -538,6 +704,96 @@
                         time: Math.random() * Math.PI * 2
                     });
                 });
+            });
+
+            // ════════════════════════════════════════════════════
+            // ⚡ CENTRAL ENERGY ORB — powers the photo gallery
+            // ════════════════════════════════════════════════════
+            const orbGroup = new THREE.Group();
+            scene.add(orbGroup);
+
+            // Core sphere — bright pulsing ball
+            const orbCoreMat = new THREE.MeshPhysicalMaterial({
+                color: 0xffffff,
+                emissive: 0xffeedd,
+                emissiveIntensity: 6,
+                metalness: 0,
+                roughness: 0,
+                transparent: true,
+                opacity: 0.92
+            });
+            const orbCore = new THREE.Mesh(new THREE.SphereGeometry(0.7, 32, 32), orbCoreMat);
+            orbGroup.add(orbCore);
+
+            // Outer halo shell — iridescent, large
+            const haloMat = new THREE.MeshPhysicalMaterial({
+                color: 0x88eeff,
+                emissive: 0x44aaff,
+                emissiveIntensity: 2.5,
+                metalness: 0.5,
+                roughness: 0.0,
+                transparent: true,
+                opacity: 0.18,
+                side: THREE.BackSide
+            });
+            const halo = new THREE.Mesh(new THREE.SphereGeometry(2.2, 32, 32), haloMat);
+            orbGroup.add(halo);
+
+            // Spinning ring 1 (horizontal)
+            const ringGeo = new THREE.TorusGeometry(1.5, 0.06, 16, 80);
+            const ringMat = new THREE.MeshStandardMaterial({
+                color: 0xffd700,
+                emissive: 0xffaa00,
+                emissiveIntensity: 3
+            });
+            const ring1 = new THREE.Mesh(ringGeo, ringMat);
+            orbGroup.add(ring1);
+
+            // Spinning ring 2 (tilted 60°)
+            const ring2 = new THREE.Mesh(ringGeo, ringMat.clone());
+            ring2.rotation.x = Math.PI / 3;
+            orbGroup.add(ring2);
+
+            // Spinning ring 3 (tilted -60°)
+            const ring3 = new THREE.Mesh(ringGeo, ringMat.clone());
+            ring3.rotation.x = -Math.PI / 3;
+            orbGroup.add(ring3);
+
+            // Central point light for the orb itself
+            const orbLight = new THREE.PointLight(0xffeedd, 3.0, 25);
+            orbGroup.add(orbLight);
+
+            // Coloured point lights that pulse outward
+            const orbColorLights = [
+                new THREE.PointLight(0xff4466, 1.5, 18),
+                new THREE.PointLight(0x44ffcc, 1.5, 18),
+                new THREE.PointLight(0xffdd00, 1.5, 18)
+            ];
+            orbColorLights[0].position.set(2, 0, 0);
+            orbColorLights[1].position.set(-2, 0, 0);
+            orbColorLights[2].position.set(0, 2, 0);
+            orbColorLights.forEach(l => scene.add(l));
+
+            // Energy beam lines from orb to each frame position
+            const beamMat = new THREE.LineBasicMaterial({
+                color: 0xffeedd,
+                transparent: true,
+                opacity: 0.25,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            const frameAngles = images.map((_, i) => (i / images.length) * Math.PI * 2);
+            const energyBeams = frameAngles.map(angle => {
+                const endX = Math.cos(angle) * galleryRadius;
+                const endZ = Math.sin(angle) * galleryRadius;
+                const pts = [
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(endX, 0, endZ)
+                ];
+                const beamGeo = new THREE.BufferGeometry().setFromPoints(pts);
+                const beam = new THREE.Line(beamGeo, beamMat.clone());
+                scene.add(beam);
+                return beam;
             });
 
             // --- Realistic Balloons from Bottom ---
@@ -631,13 +887,59 @@
                     const elapsedTime = clock.getElapsedTime();
                     controls.update();
 
-                    // Animate 7-color chasing bulbs fast
-                    const rbColors = [0xff0000, 0xff7f00, 0xffff00, 0x00ff00, 0x00ffff, 0x0000ff, 0xff00ff];
-                    allFrameBulbs.forEach(bulbs => {
+                    // ✨ Diwali sequential numbered glow: 1→2→3→4→5... each bulb lights up in turn
+                    const rbColors = [0xff0000, 0xff7f00, 0xffff00, 0x00ff00, 0x00cfff, 0x0044ff, 0xff00ff, 0xff69b4, 0xffd700];
+                    const chaserSpeed = 12; // how fast the lit position travels around
+                    allFrameBulbs.forEach((bulbs, fi) => {
+                        const total = bulbs.length;
+                        // active position travels around the ring
+                        const activePos = (elapsedTime * chaserSpeed + fi * (total / 6)) % total;
                         bulbs.forEach((bulb, i) => {
-                            const colorIndex = Math.floor(elapsedTime * 20 + i) % rbColors.length;
-                            bulb.material.color.setHex(rbColors[colorIndex]);
+                            // distance from the active position (wrapping)
+                            const dist = Math.min(
+                                Math.abs(i - activePos),
+                                total - Math.abs(i - activePos)
+                            );
+                            // The closer to activePos, the brighter the bulb
+                            const brightness = Math.max(0, 1 - dist / 3.5);
+                            const colorIndex = (Math.floor(activePos) + i) % rbColors.length;
+                            const col = new THREE.Color(rbColors[colorIndex]);
+                            bulb.material.color.set(col);
+                            bulb.material.emissive.set(col);
+                            bulb.material.emissiveIntensity = brightness * 6.0; // Bright Diwali glow
                         });
+                    });
+
+                    // Sync per-bulb point lights with their nearest bulb brightness
+                    allBulbLights.forEach((lights, fi) => {
+                        lights.forEach(({ light, bulbIndex }) => {
+                            const total = allFrameBulbs[fi] ? allFrameBulbs[fi].length : 1;
+                            const activePos = (elapsedTime * chaserSpeed + fi * (total / 6)) % total;
+                            const dist = Math.min(
+                                Math.abs(bulbIndex - activePos),
+                                total - Math.abs(bulbIndex - activePos)
+                            );
+                            const brightness = Math.max(0, 1 - dist / 3.5);
+                            light.intensity = brightness * 2.5;
+                        });
+                    });
+
+                    // Animate energy orb
+                    const orbPulse = 0.5 + 0.5 * Math.sin(elapsedTime * 2.5);
+                    orbCore.material.emissiveIntensity = 4 + orbPulse * 4;
+                    orbCore.scale.setScalar(0.9 + orbPulse * 0.2);
+                    halo.scale.setScalar(1.0 + orbPulse * 0.15);
+                    ring1.rotation.y = elapsedTime * 1.2;
+                    ring2.rotation.y = elapsedTime * -0.9;
+                    ring3.rotation.z = elapsedTime * 0.7;
+                    orbLight.intensity = 2 + orbPulse * 3;
+                    orbColorLights[0].intensity = (0.5 + 0.5 * Math.sin(elapsedTime * 3.1)) * 2.5;
+                    orbColorLights[1].intensity = (0.5 + 0.5 * Math.sin(elapsedTime * 2.7 + 1)) * 2.5;
+                    orbColorLights[2].intensity = (0.5 + 0.5 * Math.sin(elapsedTime * 3.5 + 2)) * 2.5;
+
+                    // Pulse energy beams — each beam flickers independently
+                    energyBeams.forEach((beam, bi) => {
+                        beam.material.opacity = 0.10 + 0.20 * Math.abs(Math.sin(elapsedTime * 3 + bi * 1.1));
                     });
 
                     animatedObjects.forEach(obj => {
@@ -767,7 +1069,19 @@
             const bgMusic = document.getElementById('bg-music');
             const swipeHint = document.getElementById('swipe-hint');
 
+            // Song plays exactly 2 times, then stops
+            let playCount = 0;
+            bgMusic.addEventListener('ended', () => {
+                playCount++;
+                if (playCount < 2) {
+                    bgMusic.currentTime = 0;
+                    bgMusic.play().catch(e => console.log("Audio replay blocked", e));
+                }
+                // After 2nd play, do nothing — song stops
+            });
+
             startBtn.addEventListener('click', () => {
+                playCount = 0; // reset in case user reopens
                 bgMusic.play().catch(e => console.log("Audio play blocked", e));
                 triggerSparkleBurst();
                 overlay.style.opacity = '0';
